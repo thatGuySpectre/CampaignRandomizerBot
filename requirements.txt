@@ -1,0 +1,2 @@
+openai~=0.25.0
+pykanka~=0.1.0
