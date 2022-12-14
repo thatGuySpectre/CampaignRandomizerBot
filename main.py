@@ -67,10 +67,13 @@ async def create(ctx, entity_type, *description):
         await ctx.send("Couldn't parse response, try again or add manually: \n" + text)
         return
 
+    entity = client.create_entity(entity_type=entity_type, name=name, entry=entry)   # , image_url=image_response)
+
     image_prompt_boilerplate = f"Write a DALL-E prompt that generates a image for the following description. " \
                                f"It should be short and concise and only describe what there is to see in the image." \
-                               f"It should fit a DnD-campaign with a serious, low fantasy tone. " \
+                               f"It should fit a DnD-campaign with a serious, low fantasy tone. The image should look realistic." \
                                f"Here's the description: \n"
+
     image_prompt = openai.Completion.create(
         model="text-davinci-003",
         prompt=image_prompt_boilerplate + entry,
@@ -80,9 +83,9 @@ async def create(ctx, entity_type, *description):
 
     image_response = create_image(image_text)
 
-    entity = client.create_entity(entity_type=entity_type, name=name, entry=entry, image_url=image_response)
+    logger.debug(image_prompt)
 
-    await ctx.send(f"Created {name}: entity.urls.view\n{image_response}{entry}")
+    await ctx.send(f"Created {name}: {entity.urls.view}\n{entry}\n{image_response}")
 
 @bot.command()
 async def campaign(ctx, campaign_id):
